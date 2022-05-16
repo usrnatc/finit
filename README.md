@@ -9,3 +9,5 @@ the testing process...
 - make check_args actually check the args???
 - replace memory-unsafe functions
 - find the optimal way to store/access the boilerplate code blobs for each language
+- comments && styling
+- boilerplate asprintf error message
