@@ -1,5 +1,4 @@
 # finit
----
 I am very sick of writing boilerplate code over and over so I am making this to try and alleviate the
 insane amount of effort of making new files and writing the same code.
 
