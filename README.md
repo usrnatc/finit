@@ -11,4 +11,4 @@ the testing process...
 - find the optimal way to store/access the boilerplate code blobs for each language
 - comments && styling
 - boilerplate asprintf error message
-- add project commadnline flag to allow for initialising project dir structures complete with makefiles (may not be viable for all languages)
+- add project command-line flag to allow for initialising project dir structures complete with makefiles (may not be viable for all languages)
