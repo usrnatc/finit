@@ -9,6 +9,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <stdint.h>
+#include <time.h>
 
 //TODO: find the optimal way to store these (hashmap ?)
 #define PYTHON "def main():\n\tprint(\"Hello, World!\")\n\nif __name__ == \"__main__\":\n\tmain()"
@@ -23,13 +26,41 @@
 #define ARG_NO 3
 #define MAX_SZ 8
 
+/* global commandline flags */
+uint8_t verbose,
+        project;
+
+/* current system time for logging */
+time_t systemTime;
+
 FILE *open_file(char *filepath);
-void file_type_mutex(char *filetype, char *filepath);
+void file_type_multiplexer(char *filetype, char *filepath);
 void init_file(char *filepath, char *boilerplate);
 void usage(void);
 void check_args(int argc, char **argv);
 
+/*
+ * Logs the given message and current system time to stderr
+ */
+void errlog(const char *message) {
+
+    time(&systemTime);
+    char *charTime = ctime(&systemTime);
+    charTime[strlen(charTime) - 1] = '\0';
+
+    fprintf(stderr, "[%s] :: %s\n", charTime, message);
+}
+
+/*
+ * Open a file at the given filepath and return its stream.
+ *
+ * Returns the address of the newly opened file
+ *
+ * Note: returns NULL on error
+ */
 FILE *open_file(char *filepath) {
+
+    if (verbose) errlog("Creating file");
 
     if (!filepath || !strlen(filepath)) return NULL;
 
@@ -38,8 +69,12 @@ FILE *open_file(char *filepath) {
     return file;
 }
 
-// TODO: strncmp probably isn't safe 
-void file_type_mutex(char *filetype, char *filepath) {
+/*
+ * Boilerplate code language multiplexer
+ */
+void file_type_multiplexer(char *filetype, char *filepath) {
+
+    if (verbose) errlog("Determining filetype");
 
     char *boilerplate = NULL;
 
@@ -78,7 +113,16 @@ void file_type_mutex(char *filetype, char *filepath) {
     init_file(filepath, boilerplate);
 }
 
+/*
+ * Opens a file stream at the given filepath and writes the given 
+ * boilerplate code to it.
+ *
+ * Note: on error, error message is errlogged to stderr and the
+ * process is terminated
+ */
 void init_file(char *filepath, char *boilerplate) {
+
+    if (verbose) errlog("Writing boilerplate to file");
 
     FILE *file = open_file(filepath);
 
@@ -103,26 +147,73 @@ void init_file(char *filepath, char *boilerplate) {
     free(boilerplate);
 }
 
+/*
+ * Usage error handling
+ */
 void usage(void) {
 
-    fprintf(stderr, "Usage: ./finit filepath filetype\n");
+    fprintf(stderr, "Usage: ./finit [-h | [-v] [-p] filepath filetype]\n");
 
     exit(-1);
 }
 
+void help(void) {
+
+    fprintf(stderr,
+            "finit\t-\tAutomatically initialise files and small projects\n\n"
+            "./finit [-h | [-v] [-p] filepath filetype]\n\n"
+            "-h:\n"
+            "\tdisplays this help message and terminates the program.\n\n"
+            "-v:\n"
+            "\tdisplays verbose log messages during program runtime.\n\n"
+            "-p:\n"
+            "\tinitialise a small project instead of a single file. When this\n"
+            "\tflag is set, filepath is used as the main file of the\n"
+            "\tcreated project, \"src\" and \"lib\" directories are made (empty).\n\n"
+            "\tIf any of the following languages are set when initialising the\n"
+            "\tsmall project, a makefile is also created and will automatically\n"
+            "\tcompile and link files in the \"src\" and \"lib\" directories.\n"
+    );
+
+    exit(0);    // exit normally
+}
+
+/*
+ * Checks given commandline arguments
+ */
 void check_args(int argc, char **argv) {
+ 
+    int stop;
+    while (stop = getopt(argc, argv, "pvh"), stop != -1) {
 
-    if (argc != ARG_NO) {
+        switch (stop) {
 
-        usage();
+            case 'h':
+
+                help();
+                break;
+            case 'v':
+
+                verbose = 1;
+                break;
+            case 'p':
+
+                project = 1;
+                break;
+            default:
+
+                usage();
+        }
     }
+
+    if (argc - optind < 2) usage();
 }
 
 int main(int argc, char **argv) {
 
     check_args(argc, argv);
 
-    file_type_mutex(argv[2], argv[1]);
+    file_type_multiplexer(argv[optind + 1], argv[optind]);
 
     return 0;
 }
