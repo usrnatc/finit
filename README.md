@@ -6,10 +6,8 @@ Ah I mean, this is for *streamlining my workflow* so that I can minimise the cod
 the testing process...
 
 ## TODO
-- make check_args actually check the args???
 - replace memory-unsafe functions
 - find the optimal way to store/access the boilerplate code blobs for each language
-- comments && styling
 - boilerplate asprintf error message
 - add project command-line flag to allow for initialising project dir structures complete with makefiles (may not be viable for all languages)
 - add command-line flag to allow for choice of c compiler (gcc, clang, ...)
