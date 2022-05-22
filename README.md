@@ -8,6 +8,5 @@ the testing process...
 ## TODO
 - replace memory-unsafe functions
 - find the optimal way to store/access the boilerplate code blobs for each language
-- boilerplate asprintf error message
 - add project command-line flag to allow for initialising project dir structures complete with makefiles (may not be viable for all languages)
 - add command-line flag to allow for choice of c compiler (gcc, clang, ...)
