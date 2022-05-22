@@ -160,8 +160,17 @@ void usage(void) {
 void help(void) {
 
     fprintf(stderr,
-            "finit\t-\tAutomatically initialise files and small projects\n\n"
-            "./finit [-h | [-v] [-p] filepath filetype]\n\n"
+            "finit - Automatically initialise files and small projects\n\n"
+            "Usage:\n\t./finit [-h | [-v] [-p] filepath filetype]\n\n"
+            "Languages supported: (language => filetype)\n"
+            "\t- C => c\n"
+            "\t- Haskell => haskell\n"
+            "\t- Golang => go\n"
+            "\t- Harelang => hare\n"
+            "\t- HTML => html\n"
+            "\t- Python => py\n"
+            "\t- Make => make\n"
+            "\t- Java => java\n\n"
             "-h:\n"
             "\tdisplays this help message and terminates the program.\n\n"
             "-v:\n"
@@ -172,7 +181,16 @@ void help(void) {
             "\tcreated project, \"src\" and \"lib\" directories are made (empty).\n\n"
             "\tIf any of the following languages are set when initialising the\n"
             "\tsmall project, a makefile is also created and will automatically\n"
-            "\tcompile and link files in the \"src\" and \"lib\" directories.\n"
+            "\tcompile and link files in the \"src\" and \"lib\" directories:\n"
+            "\t\t- Java\n"
+            "\t\t- C\n"
+            "\t\t- Harelang\n"
+            "\t\t- Golang\n\n"
+            "Examples:\n\n"
+            "$ ./finit example.hs haskell\n\n"
+            "$ ./finit -v example.ha hare\n\n"
+            "$ ./finit -p example.c c\n\n"
+            "$ ./finit -vp example.java java\n"
     );
 
     exit(0);    // exit normally
