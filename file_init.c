@@ -17,7 +17,7 @@
 #define PYTHON "def main():\n\tprint(\"Hello, World!\")\n\nif __name__ == \"__main__\":\n\tmain()"
 #define HASKELL "main :: IO ()\nmain =\n  do\n    print(\"Hello, World!\")"
 #define C "#include <stdio.h>\n\nint main(void) {\n\n\treturn 0;\n}"
-#define GO "package main\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\"\n}"
+#define GO "package main\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}"
 #define JAVA "class Code {\n\n\tpublic static void main(String args[]) {\n\n\tSystem.out.println(\"Hello, World!\");\n}"
 #define HARE "use fmt;\n\nexport fn main() void = {\n\n\tfmt::println(\"Hello, World!\")!;\n};"
 #define HTML "<!DOCTYPE html>\n<html>\n\t<head>\n\t</head>\n\t<body>\n\tHello, World!\n\t</body>\n</html>"
@@ -104,6 +104,7 @@ void file_type_multiplexer(char *filetype, char *filepath) {
         asprintf(&boilerplate, "%s", MAKE);
     } else {
 
+        if (verbose) errlog("unsupported filetype in command-line args");
         fprintf(stderr, "ERROR :: unknown filetype \"%s\"\n", filetype);
         if (boilerplate) free(boilerplate); // unreachable
 
@@ -128,6 +129,7 @@ void init_file(char *filepath, char *boilerplate) {
 
     if (!file) {
 
+        if (verbose) errlog("cannot write to file pointer if NULL");
         fprintf(stderr, "ERROR :: unable to open file \"%s\"\n", filepath);
         fclose(file);
 
@@ -136,7 +138,8 @@ void init_file(char *filepath, char *boilerplate) {
 
     if (!boilerplate) {
 
-        fprintf(stderr, "ERROR :: boilerplate bug\n");
+        if (verbose) errlog("cannot write boilerplate blob if NULL");
+        fprintf(stderr, "ERROR :: Out of memory\n");
         fclose(file);
 
         exit(-3);
@@ -220,6 +223,7 @@ void check_args(int argc, char **argv) {
                 break;
             default:
 
+                if (verbose) errlog("unsupported flag in command-line args");
                 usage();
         }
     }
